@@ -10,18 +10,23 @@ class FlutterModelAssert {
     ModelDescriptor descriptor, {
     required List<String> requiredKeys,
   }) {
-    if (descriptor == null) {
-      return ValidationResult.error("Schema not defined for model validation");
-    }
+    // Removed unnecessary null check for descriptor
 
+    // Validate required keys
+    final missing = <String>[];
     for (var key in requiredKeys) {
       if (!json.containsKey(key)) {
-        return ValidationResult.error("Missing required key: $key");
+        missing.add(key);
       }
     }
+    if (missing.isNotEmpty) {
+      return ValidationResult.error(
+        "Missing required key(s): ${missing.join(', ')}",
+      );
+    }
 
+    // Validate schema contract
     final errors = ContractValidator.validateContract(json, descriptor);
-
     if (errors.isNotEmpty) {
       return ValidationResult.error(errors.join("\n"));
     }
