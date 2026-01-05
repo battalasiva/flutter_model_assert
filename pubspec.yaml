@@ -1,6 +1,6 @@
 name: flutter_model_assert
 description: "Early runtime validator for backend JSON responses to prevent type crashes and detect API contract mismatches in Flutter."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/battalasiva/flutter_model_assert
 repository: https://github.com/battalasiva/flutter_model_assert
 
