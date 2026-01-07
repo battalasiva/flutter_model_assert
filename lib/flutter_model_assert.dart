@@ -1,53 +1,62 @@
 class FlutterModelAssert {
-  /// Detect mismatches using a sample model instance
-  static void detectModel<T>(
+  /// One-line debugging API to detect backend type regressions safely
+  static ValidationResult detect<T>(
     Map<String, dynamic> json, {
-    required dynamic sample,
+    dynamic sample,
   }) {
-    try {
-      final expectedJson = sample.toJson() as Map<String, dynamic>;
-      final errors = <String>[];
+    final errors = <String>[];
 
-      void validate(
-        Map<String, dynamic> exp,
-        Map<String, dynamic> rec,
-        String path,
-      ) {
-        exp.forEach((key, value) {
-          final currentPath = path.isEmpty ? key : "$path.$key";
-          final recVal = rec[key];
+    void walk(dynamic expected, dynamic received, String path) {
+      if (received == null) return;
 
-          if (recVal == null) return;
+      // Nullable fields allowed
+      if (expected == null) return;
 
-          if (value != null && recVal.runtimeType != value.runtimeType) {
-            errors.add(
-              "❗ Field: '$currentPath'\n"
-              "➡ Expected: ${value.runtimeType}\n"
-              "⬅ Received: ${recVal.runtimeType}  (value: $recVal)\n",
-            );
-          }
+      final expType = expected.runtimeType;
+      final recType = received.runtimeType;
 
-          if (value is Map && recVal is Map) {
-            validate(
-              value.cast<String, dynamic>(),
-              recVal.cast<String, dynamic>(),
-              currentPath,
-            );
-          }
+      if (expType != recType) {
+        errors.add(
+          "❗ Type mismatch at '$path'\n"
+          "  → Expected: $expType\n"
+          "  ← Received: $recType (value: $received)\n",
+        );
+      }
+
+      if (expected is Map && received is Map) {
+        expected.forEach((k, v) {
+          walk(v, received[k], path.isEmpty ? k : "$path.$k");
         });
       }
 
-      validate(expectedJson, json, "");
-
-      if (errors.isNotEmpty) {
-        print(
-          "\n🚨 FlutterModelAssert Mismatch Report for: $T\n${errors.join('\n')}",
-        );
-      } else {
-        print("\n✅ No mismatches found for model: $T");
+      if (expected is List && received is List) {
+        for (int i = 0; i < expected.length; i++) {
+          walk(expected[i], received[i], "$path[$i]");
+        }
       }
-    } catch (e) {
-      print("🚨 FlutterModelAssert inspection failed: $e");
     }
+
+    if (sample != null) {
+      final expectedJson = (sample as dynamic).toJson() as Map<String, dynamic>;
+      walk(expectedJson, json, T.toString());
+    }
+
+    if (errors.isNotEmpty) {
+      return ValidationResult.error(errors.join("\n"));
+    }
+    return ValidationResult.success();
   }
+}
+
+/// Result returned from model contract inspection
+class ValidationResult {
+  final bool isValid;
+  final String? errorReport;
+
+  ValidationResult._(this.isValid, this.errorReport);
+
+  factory ValidationResult.success() => ValidationResult._(true, null);
+
+  factory ValidationResult.error(String error) =>
+      ValidationResult._(false, error);
 }
