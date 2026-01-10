@@ -46,3 +46,38 @@
 ### Notes
 - Does **not auto-modify model types** (Flutter runtime reflection limitation).
 - Intended for **on-demand debugging** when a type crash is encountered.
+
+## 0.0.5
+
+### 🚀 Major Release – New Architecture
+
+This release introduces a **code-generation–based model contract validator**
+to reliably detect backend type regressions in Flutter applications.
+
+### ✨ Added
+- `@ModelAssert()` annotation for model contract generation
+- Build-time extraction of model field paths and expected types
+- Runtime API to validate backend JSON **before `fromJson()`**
+- Deep nested object support
+- List and nested list support with index paths
+- Clear, human-readable error reports showing:
+  - exact field path
+  - expected type
+  - received backend type and value
+
+### 🧠 Developer Experience
+- One-time annotation per model
+- One-time `build_runner` execution
+- One-line runtime validation when debugging API crashes
+
+### 🛑 Prevents
+- `double is not a subtype of int`
+- `String is not a subtype of int?`
+- Silent backend API regressions
+
+### ⚠️ Notes
+- Requires `build_runner`
+- Intended for debug, QA, and staging environments
+- Does not auto-modify model types (manual fix required)
+
+---

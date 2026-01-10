@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      flutter_model_assert|model_assert:
+        enabled: true
+
+builders:
+  model_assert:
+    target: ":flutter_model_assert"
+    import: "package:flutter_model_assert/lib_builder/model_assert_generator.dart"
+    builder_factories: ["modelAssertBuilder"]
+    build_extensions: {".dart": [".contract.dart"]}
+    auto_apply: dependents
+    build_to: source
