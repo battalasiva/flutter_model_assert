@@ -7,8 +7,9 @@ targets:
 builders:
   model_assert:
     target: ":flutter_model_assert"
-    import: "package:flutter_model_assert/lib_builder/model_assert_generator.dart"
+    import: "package:flutter_model_assert/lib_builder/builder.dart"
     builder_factories: ["modelAssertBuilder"]
-    build_extensions: {".dart": [".contract.dart"]}
+    build_extensions: {".dart": [".model_assert.g.dart"]}
     auto_apply: dependents
     build_to: source
+    applies_builders: ["source_gen|combining_builder"]

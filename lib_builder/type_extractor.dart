@@ -12,13 +12,27 @@ class TypeExtractor {
 
       map[name] = type;
 
-      if (field.type.element is ClassElement &&
-          !field.type.isDartCoreList &&
-          !field.type.isDartCoreMap &&
-          !field.type.isDartCoreObject) {
-        map.addAll(extract(field.type.element as ClassElement, name));
+      final fieldType = field.type.element;
+      if (fieldType is ClassElement && !_isCore(fieldType.name)) {
+        map.addAll(extract(fieldType, name));
       }
     }
     return map;
+  }
+
+  bool _isCore(String name) {
+    const core = {
+      'String',
+      'int',
+      'double',
+      'bool',
+      'num',
+      'Object',
+      'List',
+      'Map',
+      'DateTime',
+      'dynamic',
+    };
+    return core.contains(name);
   }
 }

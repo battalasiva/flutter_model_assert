@@ -5,7 +5,9 @@ class ValidationResult {
   ValidationResult(this.isValid, this.errors);
 
   String prettyPrint() {
-    if (isValid) return "✅ No contract violations found";
+    if (isValid) {
+      return "✅ No contract violations found";
+    }
     return "🚨 API Contract Broken\n\n${errors.join('\n')}";
   }
 }
