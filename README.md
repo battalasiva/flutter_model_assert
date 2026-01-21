@@ -59,10 +59,10 @@ You receive this error:
 import 'package:flutter_model_assert/flutter_model_assert.dart';
 
 @ModelAssert()
-class PurchaseOrderDetailsModal {
-  int? postatus;
-  VendorElement? vendor;
-  List<Poitem>? poitems;
+class Order {
+  int? status;
+  Address? address;
+  List<Items>? items;
 }
 
 2️⃣ Run Code Generation (ONE TIME)
@@ -73,14 +73,14 @@ flutter pub run build_runner build
 final json = response.data as Map<String, dynamic>;
 
 final result =
-    FlutterModelAssert.validate<PurchaseOrderDetailsModal>(json);
+    FlutterModelAssert.validate<Order>(json);
 
 if (!result.isValid) {
   debugPrint(result.prettyPrint());
   return null; // prevent crash
 }
 
-return PurchaseOrderDetailsModal.fromJson(json);
+return Order.fromJson(json);
 
 
 🧪 Sample Output
