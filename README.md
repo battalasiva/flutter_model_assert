@@ -66,7 +66,7 @@ class Order {
 }
 
 2️⃣ Run Code Generation (ONE TIME)
-flutter pub run build_runner build
+flutter pub run build_runner build or dart run build_runner build
 
 
 3️⃣ Validate Backend Response (ONLY WHEN DEBUGGING)
